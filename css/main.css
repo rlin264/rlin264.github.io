@@ -85,15 +85,18 @@ ul {
     align-self: flex-end;
     margin-bottom: auto;
     margin-top: auto;
+    font-family:'Helvetica', 'Arial', 'Sans-Serif';
     font-weight: 500;
 }
 .name a{
     font-size: 25px;
     text-decoration: none;
     color: inherit;
+    font-family:'Helvetica', 'Arial', 'Sans-Serif';
     font-weight: 500;
 }
 .labels {
+    font-family:'Helvetica', 'Arial', 'Sans-Serif';
     margin-left: 20px;
     font-size: 1.5em;
 }
