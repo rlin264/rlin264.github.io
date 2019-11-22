@@ -1,36 +1,10 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>{{ page.title }}</title>
-    <!-- link to main stylesheet -->
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <link rel="icon" href="/assets/logo_sq.png">
-</head>
-<body style="height:100%;">
-<div class="navbar">
-    <div class="menu">
-        <div class="logo" onclick="location.href='index.html';" style="cursor: pointer;">
-            <img class = logoimg src="../assets/logo.png" alt="logo"> &ensp;
-            <a href="index.html">Raymond Lin</a>
-        </div>
-        <div class="links">
-            <a class = "labels" href="/">Home</a>
-            <a class = "labels" href="/about">About</a>
-            <a class = "labels" href="/Resume-RLin-Duke-201911_1.pdf">Resume</a>
-            <a class = "labels" href="/blog">Blog</a>
-        </div>
-    </div>
-</div>
-<div class="container">
-
-    {{ content }}
-
-</div><!-- /.container -->
-<footer>
-    <ul>
-        <li><a href="mailto:rlin264@gmail.com">email</a></li>
-        <li><a href="https://github.com/rlin264">github.com/rlin264</a></li>
-    </ul>
-</footer>
+<html lang="en">
+{% include head.html %}
+<body>
+{% include header.html %}
+<!--{% include banner.html %}-->
+{{ content }}
+{% include footer.html %}
 </body>
 </html>

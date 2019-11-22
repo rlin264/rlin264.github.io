@@ -1,4 +1,16 @@
-name: Raymond Lin
-markdown: kramdown
-root: /octo-5
-timezone: America/New_York
+# Site settings
+title: Raymond Lin
+email: rlin264@gmail.com
+author: Raymond Lin
+#description:
+#url:
+
+# Social icons
+show_social_icons: true
+github_username: rlin264
+twitter_username: raymond-lin-330877130
+
+# Build settings
+permalink: :title/
+sass:
+  sass_dir: css

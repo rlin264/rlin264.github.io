@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Raymond Lin - Blog</title>
-</head>
-<body>
+---
+layout: default
+title: Raymond's Blog
+---
+<h1 class="post">{{ page.title }}</h1>
+<!--<ul class="posts">-->
 
-</body>
-</html>
+<!--    {% for post in site.posts %}-->
+<!--    <li><span>{{ post.date | date_to_string }}</span> » <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a></li>-->
+<!--    {% endfor %}-->
+<!--</ul>-->
+</div>
+<div class="btn-row">
+    <div class="column">
+        <form class = "blogbtn" action="http://google.com">
+            <input type="submit" value="Go to Google aaaaaaaaaaaaaa" />
+        </form>
+    </div>
+    <div class="column">
+        <form class = "blogbtn" action="http://google.com">
+            <input type="submit" value="Go to Google" />
+        </form>
+    </div>
+    <div class="column">
+        <form class = "blogbtn" action="http://google.com">
+            <input type="submit" value="Go to Google" />
+        </form>
+    </div>
+</div>
