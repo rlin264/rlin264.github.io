@@ -14,3 +14,6 @@ twitter_username: raymond-lin-330877130
 permalink: :title/
 sass:
   sass_dir: css
+
+
+baseurl: /
