@@ -16,4 +16,4 @@ sass:
   sass_dir: css
 
 
-baseurl: /
+#baseurl: /

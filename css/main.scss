@@ -1,6 +1,8 @@
 ---
 ---
-
+body{
+  background-color:#C0C0C0;
+}
 .blurb .title {
   text-align:center;
   font-size: 3em;
@@ -13,11 +15,68 @@
   font-size: 1.5em;
   line-height: 1.4em;
   //color: #333;
-
 }
+.item-container {
+  margin-bottom: 20vh;
+
+  a {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+}
+.row {
+  //text-align: center;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+.scrollable {
+  height: 100vh;
+  width: auto;
+  //overflow-y: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  //text-align: right;
+}
+.scrollable::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollable::-webkit-scrollbar-track { // set style to track
+  background : #0099e6;
+  border-radius: 10px;
+}
+.scrollable::-webkit-scrollbar-thumb { // sets style to thumb
+  background : rgba(255,255,255,0.5);
+  //box-shadow:  0 0 6px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+.item-container-r {
+  margin-bottom: 20vh;
+
+  a {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+}
+.row {
+  //text-align: center;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+
 
 @import './bootstrap/bootstrap';
 @import 'custom/includes/header';
 @import 'custom/includes/banner';
 @import 'custom/includes/social_links';
 @import 'custom/includes/about';
+@import 'custom/includes/archive';
+@import 'custom/includes/item';
