@@ -2,7 +2,7 @@
 layout: post
 title: First Blog Post
 summary: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, dolore.
-image: /assets/blog_images/textbooks.jpg
+image: /assets/blog_images/welcome.jpg
 ---
 
 Hey, I’m Raymond, an incoming freshman at Duke University from Toronto, Canada.
