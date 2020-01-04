@@ -1,4 +1,4 @@
-{% for post in site.posts reversed %}
+{% for post in site.categories.posts reversed %}
     {% include blog_item.html
     title=post.title
     description=post.description

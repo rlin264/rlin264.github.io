@@ -1,6 +1,6 @@
 // const ScrollReveal = window.ScrollReveal;
 var slideUp = {
-    distance: '80%',
+    distance: '30%',
     origin: 'bottom',
     opacity: null
 };

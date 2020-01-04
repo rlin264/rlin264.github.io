@@ -1,7 +1,8 @@
 ---
-layout: post
+layout: project
 title: First Blog Post
 summary: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, dolore.
+categories: [posts]
 image: /assets/blog_images/welcome.jpg
 ---
 
