@@ -32,28 +32,6 @@ function Home() {
 
   return (
     <div>
-      <Intersecting>
-        <div ratio>
-          <Fade top distance="10vh" opposite>
-            <section className={styles.introContainer}>
-              <div className={styles.intro}>
-                <h1>Hi I'm Raymond</h1>
-                <p>
-                  I'm a student at Duke University, but right now I'm taking a
-                  gap year
-                </p>
-              </div>
-              <div className={styles.image}>
-                <img
-                  className={styles.profile}
-                  src="/assets/images/profile.jpg"
-                  alt="pic of me"
-                ></img>
-              </div>
-            </section>
-          </Fade>
-        </div>
-      </Intersecting>
       <IntersectFade>
         <section className={styles.introContainer}>
           <div className={styles.intro}>
@@ -72,54 +50,34 @@ function Home() {
           </div>
         </section>
       </IntersectFade>
-      <Intersecting>
-        <Fade top distance="10vh">
-          <section className={styles.container}>
-            <span
-              id={styles.left}
-              onMouseEnter={() => hover(-1)}
-              onMouseLeave={() => stopScrolling()}
-              className={styles.scrollArrow}
-            >
-              <ArrowBackIos></ArrowBackIos>
-            </span>
-            <span
-              id={styles.right}
-              onMouseEnter={() => hover(1)}
-              onMouseLeave={() => stopScrolling()}
-              className={styles.scrollArrow}
-            >
-              <ArrowForwardIos></ArrowForwardIos>
-            </span>
-            <div className={styles.projectGallery} ref={ref}>
-              <img
-                className={styles.project}
-                src="/assets/images/profile.jpg"
-              />
-              <img
-                className={styles.project}
-                src="/assets/images/profile.jpg"
-              />
-              <img
-                className={styles.project}
-                src="/assets/images/profile.jpg"
-              />
-              <img
-                className={styles.project}
-                src="/assets/images/profile.jpg"
-              />
-              <img
-                className={styles.project}
-                src="/assets/images/profile.jpg"
-              />
-              <img
-                className={styles.project}
-                src="/assets/images/profile.jpg"
-              />
-            </div>
-          </section>
-        </Fade>
-      </Intersecting>
+      <IntersectFade opposite>
+        <section className={styles.container}>
+          <span
+            id={styles.left}
+            onMouseEnter={() => hover(-1)}
+            onMouseLeave={() => stopScrolling()}
+            className={styles.scrollArrow}
+          >
+            <ArrowBackIos></ArrowBackIos>
+          </span>
+          <span
+            id={styles.right}
+            onMouseEnter={() => hover(1)}
+            onMouseLeave={() => stopScrolling()}
+            className={styles.scrollArrow}
+          >
+            <ArrowForwardIos></ArrowForwardIos>
+          </span>
+          <div className={styles.projectGallery} ref={ref}>
+            <img className={styles.project} src="/assets/images/profile.jpg" />
+            <img className={styles.project} src="/assets/images/profile.jpg" />
+            <img className={styles.project} src="/assets/images/profile.jpg" />
+            <img className={styles.project} src="/assets/images/profile.jpg" />
+            <img className={styles.project} src="/assets/images/profile.jpg" />
+            <img className={styles.project} src="/assets/images/profile.jpg" />
+          </div>
+        </section>
+      </IntersectFade>
     </div>
   );
 }

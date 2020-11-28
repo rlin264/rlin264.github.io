@@ -8,15 +8,9 @@ function IntersectFade(props){
     const [ref, entry] = useIntersect({
         threshold: buildThresholdArray()
     });
-    useEffect(() => {
-        if(entry.intersectionRatio > 0.7){
-            console.log("ASDAS")
-        }
-    });
     return(
         <div ref={ref} ratio={entry.intersectionRatio}>
-            {entry.intersectionRatio}
-            <Fade top distance="10vh" when={entry.intersectionRatio>0.6}>
+            <Fade {...props} top distance="10vh" when={entry.intersectionRatio>0.3}>
                 {props.children}
             </Fade>
         </div>  
