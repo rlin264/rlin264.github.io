@@ -1,0 +1,98 @@
+@keyframes slideInFromLeft {
+    0% {
+      transform: translateY(-50px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+.introContainer {
+    min-height: 80vh;
+    /* vertical-align: middle; */
+    /* margin-bottom: 10vh; */
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
+    justify-content:space-between;
+    animation: slideInFromLeft 1s;
+    /* align-content: center; */
+}
+
+.intro {
+    font-family: "work sans";
+    position: relative;
+    width: 60%;
+    float: left;
+    /* -webkit-animation: 1s ease-out 0s 1 slideInFromLeft; */
+    /* animation: 1s ease-out 0s 1 slideInFromLeft; */
+    overflow: hidden;
+    /* will-change: auto; */
+    /* transform: translate3d(13px, 0%, 13px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);  */
+    /* transform-style: preserve-3d; */
+}
+
+.about {
+    font-family: "work sans";
+    position: relative;
+    width: 50%;
+}
+
+.image {
+    width: 40%;
+    /* position: relative; */
+    float: right;
+    /* right: 0; */
+}
+.profile {
+    width: 100%;
+    height:auto;
+    float: right;
+    right: 0;
+    border-radius: 50%;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  /* flex-flow: wrap; */
+  align-items: center;
+  /* justify-content:space-between; */
+}
+
+.projectGallery{
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  justify-content:space-between;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  /* scroll-behavior: smooth; */
+}
+
+.projectGallery::-webkit-scrollbar {
+  display: none;
+}
+
+
+.project{
+  width: 30vw;
+  padding-left: 5vw;
+  /* flex: 0 0 auto; */
+}
+
+.scrollArrow{
+  color: red;
+  position: absolute;
+  z-index: 1;
+}
+
+.scrollArrow:hover{
+  color: orange;
+}
+.scrollArrow#right{
+  right: 0
+}
+.scrollArrow#left{
+  left: 0
+}
