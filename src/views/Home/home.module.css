@@ -14,7 +14,8 @@
   display: flex;
   flex-flow: wrap;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  justify-content: center;
   /* animation: slideInFromLeft 1s; */
   /* align-content: center; */
 }
@@ -44,7 +45,6 @@
   float: right;
   /* right: 0; */
 }
-
 .profile {
   width: 100%;
   height: auto;
@@ -54,6 +54,7 @@
 }
 
 .container {
+  scroll-snap-align: center;
   min-height: 100vh;
   display: flex;
   /* flex-flow: wrap; */
@@ -76,8 +77,10 @@
 }
 
 .project {
-  width: 30vw;
+  min-width: 20vw;
   padding-left: 5vw;
+  padding-top:1vh;
+  padding-bottom:1vh;
   /* flex: 0 0 auto; */
 }
 .project:hover {
@@ -93,9 +96,25 @@
   color: orange;
   transform: scale(1.5);
 }
+.scrollArrow#expand{
+  position: inherit;
+}
 .scrollArrow#right {
+  top: 150%;
   right: 5vw;
 }
 .scrollArrow#left {
+  top: 150%;
   left: 5vw;
+}
+
+.scrollDown{
+  /* margin-left: 50%; */
+  /* justify-self: center; */
+  text-align: center;
+}
+.expandText{
+  font-size: 10px;
+  margin: 0;
+  color:grey;
 }

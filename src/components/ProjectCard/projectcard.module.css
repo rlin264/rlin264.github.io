@@ -1,0 +1,16 @@
+.overlay {
+    display: 'block';
+}
+
+.card {
+    position: 'block';
+    font-family: 'work sans'
+}
+
+.cardTitle{
+    font-family: 'trirong'
+}
+
+.media{
+    max-width: 90%;
+}
