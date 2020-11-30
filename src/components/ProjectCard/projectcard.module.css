@@ -4,7 +4,8 @@
 
 .card {
     position: 'block';
-    font-family: 'work sans'
+    font-family: 'work sans';
+    text-decoration: none;
 }
 
 .cardTitle{

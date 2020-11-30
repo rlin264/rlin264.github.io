@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -9,8 +10,8 @@ import styles from "./projectcard.module.css";
 
 function ProjectCard(props) {
   return (
-    <ButtonBase>
-      <Card className={styles.card}>
+    <ButtonBase >
+      <Card className={styles.card} component={Link} to={"/project/"+props.project}>
         <CardContent>
           <div>
             <img className={styles.media} src={props.img}></img>

@@ -84,6 +84,7 @@ function Home() {
             <div className={styles.projectGallery} ref={ref}>
               <div className={styles.project}>
                 <ProjectCard
+                  project="pineparkhealth"
                   title="Pine Park Health"
                   description="Software Engineering Intern"
                   img="/assets/images/pph.webp"
@@ -97,6 +98,7 @@ function Home() {
               </div>
               <div className={styles.project}>
                 <ProjectCard
+                  project="pineparkhealth"
                   title="Pine Park Health"
                   description="Software Engineering Intern"
                   img="/assets/images/pph.webp"
@@ -104,6 +106,7 @@ function Home() {
               </div>
               <div className={styles.project}>
                 <ProjectCard
+                  project="pineparkhealth"
                   title="Pine Park Health"
                   description="Software Engineering Intern"
                   img="/assets/images/pph.webp"
