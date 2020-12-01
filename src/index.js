@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Navbar from './components/Navbar/Navbar'
+import Footer from './components/Footer/footer'
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
 
@@ -11,6 +12,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Navbar/>
       <App/>
+      <Footer/>
     </BrowserRouter>
   </div>,
   document.getElementById('root')

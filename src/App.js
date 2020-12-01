@@ -3,7 +3,7 @@ import './App.css';
 import {Route, Switch} from 'react-router-dom';
 import Home from './views/Home/Home'
 import Blog from './views/Blog';
-import ProjectPage from './views/ProjectPage';
+import ProjectPage from './views/ProjectPage/ProjectPage';
 
 function App() {
   return (
