@@ -1,0 +1,15 @@
+h1{
+    font-family: 'trirong';
+    margin-bottom: 0;
+}
+p{
+    font-family: 'work sans';
+}
+
+span{
+    font-size: 2vh;
+}
+
+.image{
+    height: 50vh
+}

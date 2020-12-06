@@ -10,7 +10,7 @@ function IntersectFade(props) {
   });
   return (
     <div ref={ref}>
-      <Fade {...props} top distance="10vh" when={entry.intersectionRatio > 0.3}>
+      <Fade {...props} top when={entry.intersectionRatio > 0.3}>
         {props.children}
       </Fade>
     </div>

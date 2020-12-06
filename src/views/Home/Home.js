@@ -38,7 +38,7 @@ function Home() {
 
   return (
     <div className={styles.home}>
-      <IntersectFade>
+      <IntersectFade distance="10vh">
         <section className={styles.introContainer}>
           <div className={styles.intro}>
             <h1>Hi I'm Raymond</h1>
@@ -65,7 +65,7 @@ function Home() {
         </section>
       </IntersectFade>
       <div ref={projRef}>
-        <IntersectFade opposite>
+        <IntersectFade distance="10vh" opposite>
           <span
             id={styles.left}
             onMouseEnter={() => hover(-1)}
