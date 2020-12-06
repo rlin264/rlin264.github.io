@@ -1,10 +1,9 @@
 import React from "react";
 import Projects from "../../data/projects";
-import { useParams } from "react-router-dom";
-import { FilterFrames } from "@material-ui/icons";
 import NotFound from "../NotFound";
 import styles from "./ProjectPage.module.css";
 import Tag from "../../components/Tag/Tag";
+import ReactMarkdown from "react-markdown";
 
 function ProjectPage(props) {
   let project = null;

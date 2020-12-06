@@ -6,6 +6,7 @@ import Reveal from "react-reveal/Reveal";
 import Intersecting from "../../components/Intersecting";
 import IntersectFade from "../../components/IntersectFade";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
+import Projects from "../../data/projects";
 
 function Home() {
   const [entry, updateEntry] = useState({});
@@ -32,7 +33,8 @@ function Home() {
     startScrolling(direction, scrollStep);
   }
 
-  const projScroll = () => projRef.current.scrollIntoView({ behavior: 'smooth'});
+  const projScroll = () =>
+    projRef.current.scrollIntoView({ behavior: "smooth" });
 
   return (
     <div className={styles.home}>
@@ -65,53 +67,33 @@ function Home() {
       <div ref={projRef}>
         <IntersectFade opposite>
           <span
-              id={styles.left}
-              onMouseEnter={() => hover(-1)}
-              onMouseLeave={() => stopScrolling()}
-              className={styles.scrollArrow}
-            >
-              <ArrowBackIos></ArrowBackIos>
-            </span>
-            <span
-              id={styles.right}
-              onMouseEnter={() => hover(1)}
-              onMouseLeave={() => stopScrolling()}
-              className={styles.scrollArrow}
-            >
-              <ArrowForwardIos></ArrowForwardIos>
+            id={styles.left}
+            onMouseEnter={() => hover(-1)}
+            onMouseLeave={() => stopScrolling()}
+            className={styles.scrollArrow}
+          >
+            <ArrowBackIos></ArrowBackIos>
+          </span>
+          <span
+            id={styles.right}
+            onMouseEnter={() => hover(1)}
+            onMouseLeave={() => stopScrolling()}
+            className={styles.scrollArrow}
+          >
+            <ArrowForwardIos></ArrowForwardIos>
           </span>
           <section className={styles.container}>
             <div className={styles.projectGallery} ref={ref}>
-              <div className={styles.project}>
-                <ProjectCard
-                  project="pineparkhealth"
-                  title="Pine Park Health"
-                  description="Software Engineering Intern"
-                  img="/assets/images/pph.webp"
-                />
-              </div>
-              <div className={styles.project}>
-                <ProjectCard />
-              </div>
-              <div className={styles.project}>
-                <ProjectCard />
-              </div>
-              <div className={styles.project}>
-                <ProjectCard
-                  project="pineparkhealth"
-                  title="Pine Park Health"
-                  description="Software Engineering Intern"
-                  img="/assets/images/pph.webp"
-                />
-              </div>
-              <div className={styles.project}>
-                <ProjectCard
-                  project="pineparkhealth"
-                  title="Pine Park Health"
-                  description="Software Engineering Intern"
-                  img="/assets/images/pph.webp"
-                />
-              </div>
+              {Object.entries(Projects).map(([project, v], i) => (
+                <div className={styles.project}>
+                  <ProjectCard
+                    project={project}
+                    title={v.title}
+                    description={v.short}
+                    img={v.image}
+                  />
+                </div>
+              ))}
             </div>
           </section>
         </IntersectFade>
