@@ -7,8 +7,8 @@ import IntersectFade from "../components/IntersectFade";
 function Blog() {
   return (
     <div className="blog">
-      <div>WIP</div>
-      <Grid container spacing={4}>
+      <div>BLOG WIP</div>
+      {/* <Grid container spacing={4}>
         {Object.entries(Blogs).map(([blog, v], i) => {
           const opposite = i >= 3 ? true : false;
           return (
@@ -24,7 +24,7 @@ function Blog() {
             </Grid>
           );
         })}
-      </Grid>
+      </Grid> */}
     </div>
   );
 }

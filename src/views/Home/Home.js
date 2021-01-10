@@ -50,7 +50,7 @@ function Home() {
           <div className={styles.image}>
             <img
               className={styles.profile}
-              src="/assets/images/profile.jpg"
+              src={process.env.PUBLIC_URL+"/assets/images/profile.jpg"}
               alt="pic of me"
             ></img>
           </div>
