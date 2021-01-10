@@ -5,15 +5,15 @@ import App from './App';
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/footer'
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter} from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <div>
-    <BrowserRouter>
+    <HashRouter>
       <Navbar/>
       <App/>
       <Footer/>
-    </BrowserRouter>
+    </HashRouter>
   </div>,
   document.getElementById('root')
 );
