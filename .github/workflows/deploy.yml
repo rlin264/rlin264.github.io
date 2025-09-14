@@ -1,17 +1,29 @@
 # .github/workflows/deploy.yml
-# Simplified version for initial testing - put this in rlin264.github.io
 name: Deploy Site to Pages
 
 on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types: [content-updated]
   workflow_dispatch:
+    inputs:
+      content_sha:
+        description: 'SHA of the content to download'
+        required: false
+      source_repo:
+        description: 'Source repository name'
+        required: false
+      timestamp:
+        description: 'Timestamp of the trigger'
+        required: false
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read  # Required for downloading artifacts
 
 concurrency:
   group: "pages"
@@ -20,10 +32,15 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout public repo
         uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -31,19 +48,87 @@ jobs:
           node-version: '18'
           cache: 'pnpm'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Debug trigger
+        run: |
+          echo "🎯 Workflow triggered!"
+          echo "Event name: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "Repository dispatch received!"
+            echo "Event type: ${{ github.event.action }}"
+            echo "SHA from payload: ${{ github.event.client_payload.sha }}"
+            echo "Repository: ${{ github.event.client_payload.repository }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Workflow dispatch received!"
+            echo "Content SHA: ${{ inputs.content_sha }}"
+            echo "Source repo: ${{ inputs.source_repo }}"
+          fi
+          echo "Timestamp: ${{ github.event.head_commit.timestamp || inputs.timestamp }}"
+
+      - name: Download blog content
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{ secrets.GH_PAGES_PAT || github.token }}
+          workflow: main.yml
+          repo: ${{ github.event.client_payload.repository || inputs.source_repo || 'rlin264/linbox-src' }}
+          branch: main
+          name_is_regexp: true
+          name: blog-content-.*
+          path: ./public/
+          skip_unpack: true
+          if_no_artifact_found: warn
+
+      - name: Extract blog content to expected location
+        run: |
+          # Find the downloaded zip file
+          ZIP_FILE=$(find ./public -name "blog-content-*.zip" | head -1)
+          
+          if [ -n "$ZIP_FILE" ]; then
+            echo "📦 Found artifact: $ZIP_FILE"
+            
+            # Create the blog-content directory
+            mkdir -p ./public/blog-content
+            
+            # Extract directly to the expected location
+            unzip -qo "$ZIP_FILE" -d ./public/blog-content/
+            
+            # Remove the zip file
+            rm "$ZIP_FILE"
+            
+            echo "✅ Extracted blog content to ./public/blog-content/"
+            ls -la ./public/blog-content/
+          else
+            echo "⚠️  No blog content artifact found"
+            mkdir -p ./public/blog-content
+          fi
+
+      - name: Prepare blog content
+        # Always runs to ensure posts.json exists
+        run: |
+          # Check if we received dynamic content
+          if [ -f "./public/blog-content/posts-index.json" ]; then
+            # Use dynamic content from private repo
+            cp ./public/blog-content/posts-index.json ./public/posts.json
+            echo "✅ Using dynamic blog content from ${{ github.event_name }}"
+          else
+            # Create empty posts array if no dynamic content
+            echo '[]' > ./public/posts.json
+            echo "⚠️  No dynamic content available, using empty posts array"
+          fi
+
+          # Copy processed content if available
+          if [ -d "./public/blog-content/processed-content" ]; then
+            cp -r ./public/blog-content/processed-content/* ./public/ 2>/dev/null || :
+            echo "✅ Copied additional content files"
+          fi
 
       - name: Build React app
         run: pnpm run build
         env:
           REACT_APP_SITE_TITLE: "LinBox"
-          REACT_APP_AUTHOR: "Your Name"
+          REACT_APP_AUTHOR: "rlin264"
           NODE_ENV: production
 
       - name: Setup Pages
