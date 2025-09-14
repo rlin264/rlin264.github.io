@@ -8,6 +8,16 @@ on:
   repository_dispatch:
     types: [content-updated]
   workflow_dispatch:
+    inputs:
+      content_sha:
+        description: 'SHA of the content to download'
+        required: false
+      source_repo:
+        description: 'Source repository name'
+        required: false
+      timestamp:
+        description: 'Timestamp of the trigger'
+        required: false
 
 permissions:
   contents: read
@@ -40,32 +50,53 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Debug trigger
+        run: |
+          echo "🎯 Workflow triggered!"
+          echo "Event name: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "Repository dispatch received!"
+            echo "Event type: ${{ github.event.action }}"
+            echo "SHA from payload: ${{ github.event.client_payload.sha }}"
+            echo "Repository: ${{ github.event.client_payload.repository }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Workflow dispatch received!"
+            echo "Content SHA: ${{ inputs.content_sha }}"
+            echo "Source repo: ${{ inputs.source_repo }}"
+          fi
+          echo "Timestamp: ${{ github.event.head_commit.timestamp || inputs.timestamp }}"
+
       - name: Download blog content
-        if: github.event_name == 'repository_dispatch'
+        if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
         uses: actions/download-artifact@v4
         with:
-          name: blog-content-${{ github.event.client_payload.sha }}
+          name: blog-content-${{ github.event.client_payload.sha || inputs.content_sha || github.sha }}
           path: ./public/blog-content/
           github-token: ${{ secrets.GH_PAGES_PAT }}
-          repository: ${{ github.event.client_payload.repository || 'rlin264/linbox-src' }}
+          repository: ${{ github.event.client_payload.repository || inputs.source_repo || 'rlin264/linbox-src' }}
+        continue-on-error: true
 
       - name: Prepare blog content
         # Always runs to ensure posts.json exists
         run: |
-          # Always ensure we have a posts.json file
+          # Check if we received dynamic content
           if [ -f "./public/blog-content/posts-index.json" ]; then
             # Use dynamic content from private repo
             cp ./public/blog-content/posts-index.json ./public/posts.json
-            echo "✅ Using dynamic blog content"
+            echo "✅ Using dynamic blog content from ${{ github.event_name }}"
           else
             # Create empty posts array if no dynamic content
             echo '[]' > ./public/posts.json
             echo "⚠️  No dynamic content available, using empty posts array"
+            if [ "${{ github.event_name }}" = "repository_dispatch" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "   This might indicate the artifact download failed"
+            fi
           fi
 
           # Copy processed content if available
           if [ -d "./public/blog-content/processed-content" ]; then
             cp -r ./public/blog-content/processed-content/* ./public/ 2>/dev/null || :
+            echo "✅ Copied additional content files"
           fi
 
       - name: Build React app
