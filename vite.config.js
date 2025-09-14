@@ -14,6 +14,7 @@ export default defineConfig({
       '@/components': path.resolve(__dirname, './src/components'),
       '@/types': path.resolve(__dirname, './src/types'),
       '@/utils': path.resolve(__dirname, './src/utils'),
+      buffer: 'buffer',
     },
   },
   build: {
@@ -47,9 +48,10 @@ export default defineConfig({
   // Handle client-side routing
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    global: 'globalThis',
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'react-markdown']
+    include: ['react', 'react-dom', 'react-router-dom', 'react-markdown', 'buffer']
   }
 })
