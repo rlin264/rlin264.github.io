@@ -42,7 +42,7 @@ jobs:
 
       - name: Download blog content
         if: github.event_name == 'repository_dispatch'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: blog-content-${{ github.event.client_payload.sha || github.sha }}
           path: ./public/blog-content/
