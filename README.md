@@ -1,6 +1,6 @@
 # My personal website
 
-Soruce code for my personal website, built in React.
+Source code for my personal website, built in React.
 
 ## Development
 
