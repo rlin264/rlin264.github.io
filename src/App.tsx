@@ -14,6 +14,19 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Handle GitHub Pages SPA routing
+  useEffect(() => {
+    const handleGitHubPagesRouting = () => {
+      const path = window.location.search;
+      if (path.startsWith('/?/')) {
+        const route = path.slice(2); // Remove '/?/'
+        window.history.replaceState(null, '', route);
+      }
+    };
+
+    handleGitHubPagesRouting();
+  }, []);
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
