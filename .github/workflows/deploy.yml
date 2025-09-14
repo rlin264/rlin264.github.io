@@ -83,13 +83,15 @@ jobs:
           mkdir -p ./public/blog-content
 
           # Try to find and download the artifact using GitHub API
-          ARTIFACT_URL=$(curl -s \
+          ARTIFACT_INFO=$(curl -s \
             -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?name=$ARTIFACT_NAME" | \
-            jq -r '.artifacts[0].archive_download_url // empty')
+            "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?name=$ARTIFACT_NAME")
 
-          if [ -n "$ARTIFACT_URL" ]; then
+          # Extract the download URL for the most recent matching artifact
+          ARTIFACT_URL=$(echo "$ARTIFACT_INFO" | jq -r '.artifacts[0].archive_download_url // empty')
+
+          if [ -n "$ARTIFACT_URL" ] && [ "$ARTIFACT_URL" != "null" ]; then
             echo "🔗 Found artifact URL, downloading..."
             if curl -L -o ./public/blog-content/artifact.zip \
                -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
@@ -104,23 +106,29 @@ jobs:
               ls -la ./public/blog-content/
             else
               echo "❌ Failed to download artifact from URL"
+              echo "   URL: $ARTIFACT_URL"
             fi
           else
-            echo "❌ Artifact not found via API"
-            echo "   Checking available artifacts..."
+            echo "❌ Artifact '$ARTIFACT_NAME' not found via API"
+            echo "   API Response:"
+            echo "$ARTIFACT_INFO" | jq '.'
+
+            echo ""
+            echo "   Checking available artifacts in $SOURCE_REPO..."
 
             # List recent artifacts for debugging
             curl -s \
               -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
               -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?per_page=5" | \
-              jq -r '.artifacts[] | "  \(.name) (created: \(.created_at))"'
+              "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?per_page=10" | \
+              jq -r '.artifacts[] | "  \(.name) (created: \(.created_at | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y-%m-%d %H:%M:%S")))"'
 
             echo ""
             echo "   Possible issues:"
             echo "   - Artifact expired (1 day retention)"
-            echo "   - SHA mismatch between upload/download"
-            echo "   - GH_PAGES_PAT lacks artifact read permissions"
+            echo "   - SHA mismatch: expected '$CONTENT_SHA'"
+            echo "   - GH_PAGES_PAT lacks permissions (needs 'repo' and 'actions:read')"
+            echo "   - Source repo '$SOURCE_REPO' may not exist or be accessible"
           fi
         continue-on-error: true
 
