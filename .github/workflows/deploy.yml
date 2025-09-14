@@ -68,12 +68,60 @@ jobs:
 
       - name: Download blog content
         if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
-        uses: actions/download-artifact@v4
-        with:
-          name: blog-content-${{ github.event.client_payload.sha || inputs.content_sha || github.sha }}
-          path: ./public/blog-content/
-          github-token: ${{ secrets.GH_PAGES_PAT }}
-          repository: ${{ github.event.client_payload.repository || inputs.source_repo || 'rlin264/linbox-src' }}
+        run: |
+          # Determine artifact details
+          CONTENT_SHA="${{ github.event.client_payload.sha || inputs.content_sha || github.sha }}"
+          SOURCE_REPO="${{ github.event.client_payload.repository || inputs.source_repo || 'rlin264/linbox-src' }}"
+          ARTIFACT_NAME="blog-content-$CONTENT_SHA"
+
+          echo "📥 Attempting to download artifact:"
+          echo "   Name: $ARTIFACT_NAME"
+          echo "   Repository: $SOURCE_REPO"
+          echo "   SHA: $CONTENT_SHA"
+          echo "   Event: ${{ github.event_name }}"
+
+          mkdir -p ./public/blog-content
+
+          # Try to find and download the artifact using GitHub API
+          ARTIFACT_URL=$(curl -s \
+            -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?name=$ARTIFACT_NAME" | \
+            jq -r '.artifacts[0].archive_download_url // empty')
+
+          if [ -n "$ARTIFACT_URL" ]; then
+            echo "🔗 Found artifact URL, downloading..."
+            if curl -L -o ./public/blog-content/artifact.zip \
+               -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
+               "$ARTIFACT_URL" 2>/dev/null; then
+
+              cd ./public/blog-content
+              unzip -q artifact.zip
+              rm artifact.zip
+              cd ../..
+
+              echo "✅ Successfully downloaded and extracted artifact"
+              ls -la ./public/blog-content/
+            else
+              echo "❌ Failed to download artifact from URL"
+            fi
+          else
+            echo "❌ Artifact not found via API"
+            echo "   Checking available artifacts..."
+
+            # List recent artifacts for debugging
+            curl -s \
+              -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?per_page=5" | \
+              jq -r '.artifacts[] | "  \(.name) (created: \(.created_at))"'
+
+            echo ""
+            echo "   Possible issues:"
+            echo "   - Artifact expired (1 day retention)"
+            echo "   - SHA mismatch between upload/download"
+            echo "   - GH_PAGES_PAT lacks artifact read permissions"
+          fi
         continue-on-error: true
 
       - name: Prepare blog content
