@@ -56,7 +56,7 @@ jobs:
             cp -r ./public/blog-content/processed-content/* ./public/ 2>/dev/null || :
           fi
           if [ -f "./public/blog-content/posts-index.json" ]; then
-            cp ./public/blog-content/posts-index.json ./public/
+            cp ./public/blog-content/posts-index.json ./public/posts.json
           fi
 
       - name: Build React app
