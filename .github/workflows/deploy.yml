@@ -23,6 +23,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read  # Required for downloading artifacts
 
 concurrency:
   group: "pages"
@@ -82,11 +83,44 @@ jobs:
 
           mkdir -p ./public/blog-content
 
-          # Try to find and download the artifact using GitHub API
-          echo "🌐 Querying GitHub API for artifact: $ARTIFACT_NAME"
+          # Method 1: Try using dawidd6/action-download-artifact for cross-repo downloads
+          echo "🔄 Attempting download using GitHub Actions..."
+        continue-on-error: true
+
+      - name: Download artifact using GitHub Actions
+        if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          github_token: ${{ secrets.GH_PAGES_PAT }}
+          workflow: main.yml
+          repo: ${{ github.event.client_payload.repository || inputs.source_repo || 'rlin264/linbox-src' }}
+          name: blog-content-${{ github.event.client_payload.sha || inputs.content_sha || github.sha }}
+          path: ./public/blog-content
+          if_no_artifact_found: warn
+        continue-on-error: true
+
+      - name: Fallback artifact download via API
+        if: (github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && !steps.download-artifact.outputs.found
+        run: |
+          # Fallback to API method if the action fails
+          CONTENT_SHA="${{ github.event.client_payload.sha || inputs.content_sha || github.sha }}"
+          SOURCE_REPO="${{ github.event.client_payload.repository || inputs.source_repo || 'rlin264/linbox-src' }}"
+          ARTIFACT_NAME="blog-content-$CONTENT_SHA"
+
+          echo "🌐 Fallback: Querying GitHub API for artifact: $ARTIFACT_NAME"
+          
+          # Check if GH_PAGES_PAT is available
+          if [ -z "${{ secrets.GH_PAGES_PAT }}" ]; then
+            echo "❌ GH_PAGES_PAT secret is not configured"
+            echo "   Please add a Personal Access Token with 'repo' and 'actions:read' permissions"
+            echo "   Go to: Settings > Secrets and variables > Actions > Repository secrets"
+            exit 0
+          fi
+
           ARTIFACT_INFO=$(curl -s \
-            -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
+            -H "Authorization: Bearer ${{ secrets.GH_PAGES_PAT }}" \
             -H "Accept: application/vnd.github.v3+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?name=$ARTIFACT_NAME")
 
           # Check if the response is valid JSON
@@ -99,7 +133,8 @@ jobs:
             if [ -n "$ARTIFACT_URL" ] && [ "$ARTIFACT_URL" != "null" ]; then
               echo "🔗 Found artifact URL, downloading..."
               if curl -L -o ./public/blog-content/artifact.zip \
-                 -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
+                 -H "Authorization: Bearer ${{ secrets.GH_PAGES_PAT }}" \
+                 -H "X-GitHub-Api-Version: 2022-11-28" \
                  "$ARTIFACT_URL" 2>/dev/null; then
 
                 cd ./public/blog-content
@@ -123,8 +158,9 @@ jobs:
 
               # List recent artifacts for debugging
               ARTIFACTS_LIST=$(curl -s \
-                -H "Authorization: token ${{ secrets.GH_PAGES_PAT }}" \
+                -H "Authorization: Bearer ${{ secrets.GH_PAGES_PAT }}" \
                 -H "Accept: application/vnd.github.v3+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
                 "https://api.github.com/repos/$SOURCE_REPO/actions/artifacts?per_page=10")
 
               if echo "$ARTIFACTS_LIST" | jq empty 2>/dev/null; then
@@ -135,20 +171,21 @@ jobs:
               fi
 
               echo ""
-              echo "   Possible issues:"
-              echo "   - Artifact expired (1 day retention)"
-              echo "   - SHA mismatch: expected '$CONTENT_SHA'"
-              echo "   - GH_PAGES_PAT lacks permissions (needs 'repo' and 'actions:read')"
-              echo "   - Source repo '$SOURCE_REPO' may not exist or be accessible"
+              echo "   Troubleshooting steps:"
+              echo "   1. Verify GH_PAGES_PAT has 'repo' and 'actions:read' permissions"
+              echo "   2. Check if artifact expired (1 day retention)"
+              echo "   3. Verify SHA matches: expected '$CONTENT_SHA'"
+              echo "   4. Ensure source repo '$SOURCE_REPO' is accessible"
             fi
           else
             echo "❌ API response is not valid JSON:"
             echo "$ARTIFACT_INFO"
             echo ""
-            echo "   This usually means:"
-            echo "   - GH_PAGES_PAT is invalid or lacks permissions"
+            echo "   Common causes:"
+            echo "   - GH_PAGES_PAT is invalid, expired, or lacks permissions"
             echo "   - Repository '$SOURCE_REPO' is not accessible"
             echo "   - API rate limit exceeded"
+            echo "   - Token format should be 'ghp_' for classic tokens or 'github_pat_' for fine-grained"
           fi
         continue-on-error: true
 
