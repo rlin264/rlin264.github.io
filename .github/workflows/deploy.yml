@@ -49,14 +49,23 @@ jobs:
           github-token: ${{ secrets.GH_PAGES_PAT }}
           repository: ${{ github.event.client_payload.repository || 'rlin264/linbox-src' }}
 
-      - name: Copy blog content to public directory
-        if: github.event_name == 'repository_dispatch'
+      - name: Prepare blog content
+        # Always runs to ensure posts.json exists
         run: |
+          # Always ensure we have a posts.json file
+          if [ -f "./public/blog-content/posts-index.json" ]; then
+            # Use dynamic content from private repo
+            cp ./public/blog-content/posts-index.json ./public/posts.json
+            echo "✅ Using dynamic blog content"
+          else
+            # Create empty posts array if no dynamic content
+            echo '[]' > ./public/posts.json
+            echo "⚠️  No dynamic content available, using empty posts array"
+          fi
+
+          # Copy processed content if available
           if [ -d "./public/blog-content/processed-content" ]; then
             cp -r ./public/blog-content/processed-content/* ./public/ 2>/dev/null || :
-          fi
-          if [ -f "./public/blog-content/posts-index.json" ]; then
-            cp ./public/blog-content/posts-index.json ./public/posts.json
           fi
 
       - name: Build React app
