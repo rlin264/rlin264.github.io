@@ -1,19 +1,24 @@
-# My personal website
+# LinBox - Personal Blog Site
 
-Source code for my personal website, built in React.
+A React-based blog deployed to GitHub Pages.
 
 ## Development
 
-In the project directory, you can run:
+```bash
+pnpm install
+pnpm run dev
+```
 
-### `npm start`
+## Deployment
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Manual**: Push to `main` branch or use workflow dispatch
+- **GitHub Pages**: Automatically deployed via GitHub Actions
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tech Stack
 
-### `npm run deploy`
-
-Creates a production build that can be deployed through github pages.
+- React 18
+- Vite
+- Tailwind CSS
+- React Router
+- React Markdown
+- Gray Matter (for frontmatter parsing)

@@ -40,6 +40,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Download blog content
+        if: github.event_name == 'repository_dispatch'
+        uses: actions/download-artifact@v4
+        with:
+          name: blog-content-${{ github.event.client_payload.sha }}
+          path: ./public/blog-content/
+          github-token: ${{ secrets.GH_PAGES_PAT }}
+          repository: ${{ github.event.client_payload.repository || 'rlin264/linbox-src' }}
+
+      - name: Copy blog content to public directory
+        if: github.event_name == 'repository_dispatch'
+        run: |
+          if [ -d "./public/blog-content/processed-content" ]; then
+            cp -r ./public/blog-content/processed-content/* ./public/ 2>/dev/null || :
+          fi
+          if [ -f "./public/blog-content/posts-index.json" ]; then
+            cp ./public/blog-content/posts-index.json ./public/
+          fi
+
       - name: Build React app
         run: pnpm run build
         env:
