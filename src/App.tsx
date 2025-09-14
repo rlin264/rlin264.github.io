@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { BlogPost } from './types/blog';
+import { fetchMarkdownPosts } from './utils/markdownLoader';
 import BlogList from './components/BlogList';
 import BlogPostWrapper from './components/BlogPostWrapper';
 import Header from './components/Header';
@@ -30,11 +31,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/posts.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch posts');
-        }
-        const postsData: BlogPost[] = await response.json();
+        const postsData = await fetchMarkdownPosts();
         setPosts(postsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load posts');

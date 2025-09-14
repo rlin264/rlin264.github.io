@@ -105,23 +105,30 @@ jobs:
           fi
 
       - name: Prepare blog content
-        # Always runs to ensure posts.json exists
+        # Copy markdown files and create index
         run: |
-          # Check if we received dynamic content
-          if [ -f "./public/blog-content/posts-index.json" ]; then
-            # Use dynamic content from private repo
-            cp ./public/blog-content/posts-index.json ./public/posts.json
-            echo "✅ Using dynamic blog content from ${{ github.event_name }}"
-          else
-            # Create empty posts array if no dynamic content
-            echo '[]' > ./public/posts.json
-            echo "⚠️  No dynamic content available, using empty posts array"
-          fi
-
-          # Copy processed content if available
+          # Create posts directory for markdown files
+          mkdir -p ./public/posts
+          
+          # Copy markdown files to posts directory
           if [ -d "./public/blog-content/processed-content" ]; then
-            cp -r ./public/blog-content/processed-content/* ./public/ 2>/dev/null || :
-            echo "✅ Copied additional content files"
+            # Copy all markdown files to the posts directory
+            find ./public/blog-content/processed-content -name "*.md" -exec cp {} ./public/posts/ \;
+            echo "✅ Copied markdown files to ./public/posts/"
+            
+            # Copy the file index for the frontend
+            if [ -f "./public/blog-content/posts-files.json" ]; then
+              cp ./public/blog-content/posts-files.json ./public/posts/index.json
+              echo "✅ Created posts index at ./public/posts/index.json"
+            fi
+            
+            # List what we copied
+            echo "📁 Available markdown files:"
+            ls -la ./public/posts/
+          else
+            echo "⚠️  No processed content directory found"
+            # Create empty index if no content
+            echo '[]' > ./public/posts/index.json
           fi
 
       - name: Build React app
