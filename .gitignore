@@ -85,7 +85,10 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+
+# Public directory - ignore generated files but keep static assets
+public/posts.json
+public/blog-content/
 
 # Storybook build outputs
 .out
