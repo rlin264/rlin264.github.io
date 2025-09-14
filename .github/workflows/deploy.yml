@@ -1,3 +1,5 @@
+# .github/workflows/deploy.yml
+# Simplified version for initial testing - put this in rlin264.github.io
 name: Deploy Site to Pages
 
 on:
@@ -5,22 +7,15 @@ on:
     branches:
       - main
   workflow_dispatch:
-  repository_dispatch:
-    types: [content-updated]  # Triggered by the private repo
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  actions: read  # Needed to download artifacts
 
 concurrency:
   group: "pages"
   cancel-in-progress: false
-
-defaults:
-  run:
-    shell: bash
 
 jobs:
   build-and-deploy:
@@ -29,112 +24,36 @@ jobs:
     steps:
       - name: Checkout public repo
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Fetch content from private repo
-        if: github.event_name == 'repository_dispatch'
-        run: |
-          # Create a script to fetch the latest content
-          echo "Fetching content triggered by private repo..."
-          mkdir -p src/content
-          
-      - name: Checkout private repo content
-        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          repository: rlin264/linbox-src
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          path: private-content
-          
-      - name: Process private content
-        run: |
-          # Install gray-matter for processing frontmatter
-          npm install --no-save gray-matter
-          
-          # Create content directory
-          mkdir -p src/content
-          
-          # Process markdown files and create posts index
-          node -e "
-          const fs = require('fs');
-          const path = require('path');
-          const matter = require('gray-matter');
-          
-          function getMarkdownFiles(dir) {
-            const files = [];
-            if (!fs.existsSync(dir)) return files;
-            
-            try {
-              fs.readdirSync(dir).forEach(file => {
-                const fullPath = path.join(dir, file);
-                if (fs.statSync(fullPath).isDirectory()) {
-                  files.push(...getMarkdownFiles(fullPath));
-                } else if (file.endsWith('.md')) {
-                  files.push(fullPath);
-                }
-              });
-            } catch (e) {
-              console.log('Directory not found:', dir);
-            }
-            return files;
-          }
-          
-          const posts = [];
-          const contentDirs = ['private-content/posts', 'private-content/content'];
-          
-          contentDirs.forEach(dir => {
-            const markdownFiles = getMarkdownFiles(dir);
-            
-            markdownFiles.forEach(file => {
-              const content = fs.readFileSync(file, 'utf8');
-              const { data, content: markdownContent } = matter(content);
-              const slug = path.basename(file, '.md');
-              
-              posts.push({
-                slug,
-                title: data.title || slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                date: data.date || new Date().toISOString().split('T')[0],
-                author: data.author || 'Your Name',
-                tags: data.tags || [],
-                excerpt: markdownContent.replace(/^#.*$/gm, '').substring(0, 200).trim() + '...',
-                content: content
-              });
-            });
-          });
-          
-          // Sort by date (newest first)
-          posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-          
-          // Write posts to public directory
-          fs.writeFileSync('public/posts.json', JSON.stringify(posts, null, 2));
-          console.log(\`Processed \${posts.length} posts\`);
-          "
+          version: 8
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build React app
-        run: npm run build
+        run: pnpm run build
         env:
           REACT_APP_SITE_TITLE: "LinBox"
           REACT_APP_AUTHOR: "Your Name"
           NODE_ENV: production
 
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: './build'
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
