@@ -9,7 +9,7 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
-    <NavLink to={`/post/${post.slug}`} className="block">
+    <NavLink to={`/posts/${post.slug}`} className="block">
       <article className="card group hover:shadow-lg transition-all duration-300 cursor-pointer">
         <header className="mb-4">
           <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors duration-200">

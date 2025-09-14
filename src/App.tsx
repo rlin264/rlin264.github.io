@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
+
 const App: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -18,10 +19,10 @@ const App: React.FC = () => {
   // Handle GitHub Pages SPA routing
   useEffect(() => {
     const handleGitHubPagesRouting = () => {
-      const path = window.location.search;
-      if (path.startsWith('/?/')) {
-        const route = path.slice(2); // Remove '/?/'
-        window.history.replaceState(null, '', route);
+      const search = window.location.search;
+      if (search.startsWith('?/')) {
+        const route = search.slice(2); // Remove '?/'
+        window.history.replaceState(null, '', '/' + route);
       }
     };
 
@@ -55,7 +56,7 @@ const App: React.FC = () => {
               element={<BlogList posts={posts} loading={loading} error={error} />}
             />
             <Route
-              path="/post/:slug"
+              path="/posts/:slug"
               element={<BlogPostWrapper posts={posts} />}
             />
           </Routes>
