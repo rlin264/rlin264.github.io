@@ -6,6 +6,7 @@ import BlogList from './components/BlogList';
 import BlogPostWrapper from './components/BlogPostWrapper';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
 const App: React.FC = () => {
@@ -34,6 +35,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="app">
         <Header />
         <main className="main-content">
