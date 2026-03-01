@@ -5,25 +5,12 @@ on:
   push:
     branches:
       - main
-  repository_dispatch:
-    types: [content-updated]
   workflow_dispatch:
-    inputs:
-      content_sha:
-        description: 'SHA of the content to download'
-        required: false
-      source_repo:
-        description: 'Source repository name'
-        required: false
-      timestamp:
-        description: 'Timestamp of the trigger'
-        required: false
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  actions: read  # Required for downloading artifacts
 
 concurrency:
   group: "pages"
@@ -50,26 +37,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Prepare blog content
-        # Copy markdown files from external source if available,
-        # otherwise use the posts already committed in public/posts/
-        run: |
-          if [ -d "./public/blog-content/processed-content" ]; then
-            mkdir -p ./public/posts
-            find ./public/blog-content/processed-content -name "*.md" -exec cp {} ./public/posts/ \;
-            echo "✅ Copied markdown files to ./public/posts/"
-
-            if [ -f "./public/blog-content/posts-files.json" ]; then
-              cp ./public/blog-content/posts-files.json ./public/posts/index.json
-              echo "✅ Created posts index at ./public/posts/index.json"
-            fi
-          else
-            echo "ℹ️  No external content — using committed public/posts/"
-          fi
-
-          echo "📁 Available posts:"
-          ls -la ./public/posts/
 
       - name: Build React app
         run: pnpm run build
