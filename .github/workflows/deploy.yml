@@ -52,31 +52,24 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Prepare blog content
-        # Copy markdown files and create index
+        # Copy markdown files from external source if available,
+        # otherwise use the posts already committed in public/posts/
         run: |
-          # Create posts directory for markdown files
-          mkdir -p ./public/posts
-          
-          # Copy markdown files to posts directory
           if [ -d "./public/blog-content/processed-content" ]; then
-            # Copy all markdown files to the posts directory
+            mkdir -p ./public/posts
             find ./public/blog-content/processed-content -name "*.md" -exec cp {} ./public/posts/ \;
             echo "✅ Copied markdown files to ./public/posts/"
-            
-            # Copy the file index for the frontend
+
             if [ -f "./public/blog-content/posts-files.json" ]; then
               cp ./public/blog-content/posts-files.json ./public/posts/index.json
               echo "✅ Created posts index at ./public/posts/index.json"
             fi
-            
-            # List what we copied
-            echo "📁 Available markdown files:"
-            ls -la ./public/posts/
           else
-            echo "⚠️  No processed content directory found"
-            # Create empty index if no content
-            echo '[]' > ./public/posts/index.json
+            echo "ℹ️  No external content — using committed public/posts/"
           fi
+
+          echo "📁 Available posts:"
+          ls -la ./public/posts/
 
       - name: Build React app
         run: pnpm run build
