@@ -5,8 +5,6 @@ import { BlogPost } from './types/blog';
 import { fetchMarkdownPosts } from './utils/markdownLoader';
 import BlogList from './components/BlogList';
 import BlogPostWrapper from './components/BlogPostWrapper';
-import Header from './components/Header';
-import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
@@ -47,22 +45,16 @@ const App: React.FC = () => {
   return (
     <Router>
       <ScrollToTop />
-      <div className="app">
-        <Header />
-        <main className="main-content">
-          <Routes>
-            <Route
-              path="/"
-              element={<BlogList posts={posts} loading={loading} error={error} />}
-            />
-            <Route
-              path="/posts/:slug"
-              element={<BlogPostWrapper posts={posts} />}
-            />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={<BlogList posts={posts} loading={loading} error={error} />}
+        />
+        <Route
+          path="/posts/:slug"
+          element={<BlogPostWrapper posts={posts} />}
+        />
+      </Routes>
     </Router>
   );
 };

@@ -1,37 +1,39 @@
 // src/components/BlogList.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import type { BlogListProps } from '@/types/blog';
-import { 
-  HeroSection, 
-  LoadingState, 
-  ErrorState, 
-  EmptyState, 
-  PostsGrid 
+import {
+  HeroSection,
+  LoadingState,
+  ErrorState,
+  EmptyState,
+  PostsGrid
 } from './BlogList/index';
 
 const BlogList: React.FC<BlogListProps> = ({ posts, loading, error }) => {
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+
   const handleRetry = () => {
     window.location.reload();
   };
 
+  const allTags = Array.from(
+    new Set(posts.flatMap(p => p.tags ?? []))
+  ).sort();
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section - Always visible */}
-        <HeroSection />
+    <div className="dispatch-home">
+      <HeroSection />
 
-        {/* Loading State */}
-        {loading && <LoadingState />}
+      {loading && <LoadingState />}
+      {error && <ErrorState error={error} onRetry={handleRetry} />}
+      {!loading && !error && !posts.length && <EmptyState />}
 
-        {/* Error State */}
-        {error && <ErrorState error={error} onRetry={handleRetry} />}
-
-        {/* No Posts State */}
-        {!loading && !error && !posts.length && <EmptyState />}
-
-        {/* Posts Grid - Only show when we have posts */}
-        {!loading && !error && posts.length > 0 && <PostsGrid posts={posts} />}
-      </div>
+      {!loading && !error && posts.length > 0 && (
+        <>
+          <hr className="divider" />
+          <PostsGrid posts={posts} allTags={allTags} activeTag={activeTag} onTagChange={setActiveTag} />
+        </>
+      )}
     </div>
   );
 };

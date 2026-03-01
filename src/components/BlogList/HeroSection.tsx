@@ -2,16 +2,32 @@
 import React from 'react';
 
 const HeroSection: React.FC = () => {
-  return (
-    <div className="text-center mb-16">
-      <h1 className="text-5xl font-bold text-gray-900 mb-4">
-        Welcome to the LinBox!
-      </h1>
-      <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-        An infinitessimally small piece of the internet for my personal thoughts and technical writings!
-      </p>
-    </div>
-  );
+    return (
+        <header>
+            <div className="site-name">LinBox</div>
+            <p className="bio-text">
+                An infinitesimally small piece of the internet for my personal thoughts and miscellaneous writings.
+            </p>
+            <div className="bio-links">
+                <a
+                    href="https://github.com/rlin264"
+                    className="bio-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    GitHub &rarr;
+                </a>
+                <a
+                    href="https://linkedin.com/in/rlin264"
+                    className="bio-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    LinkedIn &rarr;
+                </a>
+            </div>
+        </header>
+    );
 };
 
 export default HeroSection;

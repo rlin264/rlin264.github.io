@@ -23,11 +23,6 @@ export interface BlogListProps {
   error: string | null;
 }
 
-export interface BlogPostProps {
-  slug: string;
-  posts: BlogPost[];
-}
-
 export interface BlogPostWrapperProps {
   posts: BlogPost[];
 }
