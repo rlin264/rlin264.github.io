@@ -23,9 +23,6 @@ export function useKeyboardNav(posts: BlogPost[], currentSlug: string | undefine
           if (prev >= 0) navigate(`/posts/${posts[prev].slug}`);
           break;
         }
-        case 'Escape':
-          navigate('/');
-          break;
       }
     };
 

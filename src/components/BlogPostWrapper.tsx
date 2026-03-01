@@ -92,7 +92,6 @@ const BlogPostWrapper: React.FC<BlogPostWrapperProps> = ({ posts }) => {
             <div className="kbd-title">Keyboard shortcuts</div>
             <div className="kbd-row"><kbd>j</kbd> Next post</div>
             <div className="kbd-row"><kbd>k</kbd> Previous post</div>
-            <div className="kbd-row"><kbd>Esc</kbd> Back to home</div>
             <button className="kbd-close" onClick={() => setShowShortcuts(false)}>close</button>
           </div>
         </div>
